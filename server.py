@@ -44,6 +44,7 @@ def upload():
         
         filename = secure_filename(get_name() + '.png')
         file.stream.seek(0)
+        cleanup_folder()
         file.save('images/' + filename)
         return jsonify({'status': 'success', 'message': 'File uploaded successfully', 'path': 'images/' + filename}), 200
     except Image.UnidentifiedImageError:
