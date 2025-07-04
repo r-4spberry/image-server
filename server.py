@@ -51,6 +51,7 @@ def upload():
         if len(file.read()) > MAX_FILE_SIZE:
             return jsonify({'status': 'error', 'message': 'File size exceeds the limit of 10 MB'}), 400
         
+        file.stream.seek(0)
         file.save('images/' + filename)
         return jsonify({'status': 'success', 'message': 'File uploaded successfully', 'path': 'images/' + filename}), 200
     except Image.UnidentifiedImageError:
