@@ -10,6 +10,7 @@ from werkzeug.utils import secure_filename
 
 MAX_FOLDER_SIZE = 1 * 1024**3      # 1 GB
 TARGET_FOLDER_SIZE = 800 * 1024**2 # 800 MB
+MAX_FILE_SIZE = 10 * 1024**2     # 10 MB
 
 def cleanup_folder(path='images'):
     folder = Path(path)
@@ -45,6 +46,11 @@ def upload():
         filename = secure_filename(get_name() + '.png')
         file.stream.seek(0)
         cleanup_folder()
+        
+        #check file size
+        if len(file.read()) > MAX_FILE_SIZE:
+            return jsonify({'status': 'error', 'message': 'File size exceeds the limit of 10 MB'}), 400
+        
         file.save('images/' + filename)
         return jsonify({'status': 'success', 'message': 'File uploaded successfully', 'path': 'images/' + filename}), 200
     except Image.UnidentifiedImageError:
